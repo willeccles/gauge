@@ -73,7 +73,7 @@ void OLED::update(OBD::VehicleData& data) {
     // boost
     display.setCursor(0, 8);
     display.print("Vac/Boost: ");
-    display.print(data.boost, 0);
+    display.print(data.boost); // TODO: second param = number of decimal places
     display.setCursor(RALIGN(3), 8);
     display.print("PSI");
 
