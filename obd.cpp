@@ -29,7 +29,7 @@ bool OBD::getData(OBD::VehicleData& data_out) {
         return false;
     }
 
-    data_out.boost = ((float)manifold - (float)barom) * 0.14503774f;
+    data_out.boost = (float)(manifold - barom) * 0.14503774f;
 
     if (!obd.readPID(PID_COOLANT_TEMP, data_out.temp)) {
         return false;
