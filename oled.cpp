@@ -14,8 +14,13 @@
 
 #define OLED_RESET 9
 
-#define RALIGN(len) (1 + SCREEN_WIDTH - (6 * (len)))
-#define CALIGN(len) (1 + (SCREEN_WIDTH / 2) - (6 * (len) / 2))
+#define FONTSZ 1
+
+// get the y cursor position for row n (starting at 0)
+#define ROW(n) ((n) * FONTSZ * 8)
+
+#define RALIGN(len) (1 + SCREEN_WIDTH - ((FONTSZ * 6) * (len)))
+#define CALIGN(len) (1 + (SCREEN_WIDTH / 2) - ((FONTSZ * 6) * (len) / 2))
 
 static Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET,
         1000000UL, 1000000UL);
@@ -28,7 +33,7 @@ void OLED::init() {
     display.clearDisplay();
     display.display();
 
-    display.setTextSize(1);
+    display.setTextSize(FONTSZ);
     display.setTextColor(WHITE);
     display.setTextWrap(false);
     display.cp437(true);
@@ -64,25 +69,32 @@ void OLED::update(OBD::VehicleData& data) {
 
     // title
     display.setTextColor(BLACK, WHITE);
-    display.setCursor(0, 0);
+    display.setCursor(0, ROW(0));
     display.print("                           ");
-    display.setCursor(CALIGN(9), 0);
+    display.setCursor(CALIGN(9), ROW(0));
     display.print("Live Data");
     display.setTextColor(WHITE, BLACK);
 
     // boost
-    display.setCursor(0, 8);
+    display.setCursor(0, ROW(1));
     display.print("Vac/Boost: ");
     display.print(data.boost); // TODO: second param = number of decimal places
-    display.setCursor(RALIGN(3), 8);
+    display.setCursor(RALIGN(3), ROW(1));
     display.print("PSI");
 
     // coolant temp
-    display.setCursor(0, 16);
+    display.setCursor(0, ROW(2));
     display.print("Temp: ");
     display.print(data.temp);
-    display.setCursor(RALIGN(1), 16);
+    display.setCursor(RALIGN(1), ROW(2));
     display.print('C');
+
+    // max speed
+    display.setCursor(0, ROW(3));
+    display.print("Top Spd: ");
+    display.print(data.maxspeedmph);
+    display.setCursor(RALIGN(3), ROW(3));
+    display.print("MPH");
 
     display.display();
 }
